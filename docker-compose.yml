@@ -1,0 +1,33 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: sara
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: sara_blog
+    container_name: sara_blog-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      - sara_blog
+  nginx:
+    image: nginx:alpine
+    container_name: sara_blog-nginx
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
+    networks:
+      - sara_blog
+
+networks:
+  sara_blog:
+    driver: bridge
+
