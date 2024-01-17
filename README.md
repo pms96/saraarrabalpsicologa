@@ -1,56 +1,61 @@
-# Laravel Complete Blog Development
-This is a Blog Development Tutorial Series on Youtube. This project is made by <a href="https://zakirhossen.com" target="_blank">Zakir Hossen</a> for the tutorial Purpose.
+# Laravel 10 Blog Starter Kit
+This is Laravel 10 blog starter kit project with [Filament PHP](https://filamentphp.com/) admin panel. The project is created during [YouTube Tutorial](https://youtu.be/iVThaG_sAt0).
 
-## Tutorial Link
-- [Series Prview Link](https://www.youtube.com/watch?v=CEYYeeM763E&list=PLl4v4A2HI0YixTm5AsoTu-sKxiQti4-r6&index=1&t=1s)
-- [Youtube Playlist Link](https://www.youtube.com/playlist?list=PLl4v4A2HI0YixTm5AsoTu-sKxiQti4-r6)
+## Installation with docker
 
-## Project Live Link
-[Live Link ⇨ ](https://laravel-blog-bd.herokuapp.com/)
-
-#### Project Key Matrics
-- Laravel v7.0
-- Frontend Template [(MiniBlog by Colorlib)](https://colorlib.com/wp/template/miniblog/)
-- Admin Template [(Admin LTE 3)](https://adminlte.io/themes/dev/AdminLTE/index.html)
-
-
-#### Frontend Screenshot
-![Frontend Screenshot](public/img/frontend.png)
-
-#### Backend Screenshot
-![Backend Screenshot](public/img/backend.png)
-
-#### Setup Project
+#### 1. Clone the project
 ```bash
-# clone the repo
-git clone https://github.com/devzakir/laravel-complete-blog-development.git laravel-blog
-
-# install composer dependency
-composer install
-
-# create a environment file
-cp .env.example .env
-
-# set the Application key
-php artisan key:generate
-
-# comment database query in AppServiceProvider.php like this
-// $categories = Category::take(5)->get();
-// View::share('categories', $categories);
-
-// $setting = Setting::first();
-// View::share('setting', $setting);
-
-# setup the database credentials and migrate database with seeders
-php artisan migrate --seed
-
-# enable the database query code in AppServiceProvider.php like this
-$categories = Category::take(5)->get();
-View::share('categories', $categories);
-
-$setting = Setting::first();
-View::share('setting', $setting);
+git clone https://github.com/thecodeholic/laravel-10-blog.git
 ```
 
+#### 2. Run `composer install`
+Navigate into project folder using terminal and run
 
+```bash
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php82-composer:latest \
+    composer install --ignore-platform-reqs
+```
 
+#### 3. Copy `.env.example` into `.env`
+
+```bash
+cp .env.example .env
+```
+
+#### 4. Start the project in detached mode
+
+```bash
+./vendor/bin/sail up -d
+```
+From now on whenever you want to run artisan command you should do this from the container. <br>
+Access to the docker container
+```bash
+./vendor/bin/sail bash
+```
+
+#### 5. Set encryption key
+
+```bash
+php artisan key:generate --ansi
+```
+
+#### 6. Run migrations
+
+```bash
+php artisan migrate
+```
+
+#### 7. Add Filament Admin user
+
+```bash
+php artisan make:filament-user
+```
+
+## Demo
+> Coming soon...
+
+## 

@@ -2,40 +2,33 @@
 
 namespace App\Providers;
 
-use App\Category;
-use App\Setting;
+use Filament\Facades\Filament;
+use Filament\Navigation\NavigationItem;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        if(config('app.env') === 'production') {
-            \URL::forceScheme('https');
-        }
-
-        if (!app()->runningInConsole()) {
-            $categories = Category::take(5)->get();
-            View::share('categories', $categories);
-
-            $setting = Setting::first();
-            View::share('setting', $setting);
-        }
+        Filament::serving(function () {
+            Filament::registerNavigationItems([
+                NavigationItem::make('thecodeholic.com')
+                    ->url('https://thecodeholic.com', shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-globe-alt')
+                    ->group('Content Creator')
+                    ->sort(3),
+            ]);
+        });
     }
 }

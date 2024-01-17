@@ -2,156 +2,201 @@
 
 namespace App\Http\Controllers;
 
-use Session;
-use App\Category;
-use App\Post;
-use App\Tag;
+use App\Models\Category;
+use App\Models\Post;
+use App\Models\PostView;
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function home(): View
     {
-        $posts = Post::orderBy('created_at', 'DESC')->paginate(20);
-        return view('admin.post.index', compact('posts'));
-    }
+        // Latest post
+        $latestPost = Post::where('active', '=', 1)
+            ->whereDate('published_at', '<', Carbon::now())
+            ->orderBy('published_at', 'desc')
+            ->limit(1)
+            ->first();
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $tags = Tag::all();
-        $categories = Category::all();
-        return view('admin.post.create', compact(['categories', 'tags']));
-    }
+        // Show the most popular 3 posts based on upvotes
+        $popularPosts = Post::query()
+            ->leftJoin('upvote_downvotes', 'posts.id', '=', 'upvote_downvotes.post_id')
+            ->select('posts.*', DB::raw('COUNT(upvote_downvotes.id) as upvote_count'))
+            ->where(function ($query) {
+                $query->whereNull('upvote_downvotes.is_upvote')
+                    ->orWhere('upvote_downvotes.is_upvote', '=', 1);
+            })
+            ->where('active', '=', 1)
+            ->whereDate('published_at', '<', Carbon::now())
+            ->orderByDesc('upvote_count')
+            ->groupBy([
+                'posts.id',
+                'posts.title',
+                'posts.slug',
+                'posts.thumbnail',
+                'posts.body',
+                'posts.active',
+                'posts.published_at',
+                'posts.user_id',
+                'posts.created_at',
+                'posts.updated_at',
+                'posts.meta_title',
+                'posts.meta_description',
+            ])
+            ->limit(5)
+            ->get();
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $this->validate($request, [
-            'title' => 'required|unique:posts,title',
-            'image' => 'required|image',
-            'description' => 'required',
-            'category' => 'required',
-        ]);
+        // If authorized - Show recommended posts based on user upvotes
+        $user = auth()->user();
 
-        $post = Post::create([
-            'title' => $request->title,
-            'slug' => Str::slug($request->title),
-            'image' => 'image.jpg',
-            'description' => $request->description,
-            'iframe' => $request->iframe,
-            'category_id' => $request->category,
-            'user_id' => auth()->user()->id,
-            'published_at' => Carbon::now(),
-        ]);
+        if ($user) {
+            $leftJoin = "(SELECT cp.category_id, cp.post_id FROM upvote_downvotes
+                        JOIN category_post cp ON upvote_downvotes.post_id = cp.post_id
+                        WHERE upvote_downvotes.is_upvote = 1 and upvote_downvotes.user_id = ?) as t";
+            $recommendedPosts = Post::query()
+                ->leftJoin('category_post as cp', 'posts.id', '=', 'cp.post_id')
+                ->leftJoin(DB::raw($leftJoin), function ($join) {
+                    $join->on('t.category_id', '=', 'cp.category_id')
+                        ->on('t.post_id', '<>', 'cp.post_id');
+                })
+                ->select('posts.*')
+                ->where('posts.id', '<>', DB::raw('t.post_id'))
+                ->setBindings([$user->id])
+                ->limit(3)
+                ->get();
 
-        $post->tags()->attach($request->tags);
-
-        if($request->hasFile('image')){
-            $image = $request->image;
-            $image_new_name = time() . '.' . $image->getClientOriginalExtension();
-            $image->move('storage/post/', $image_new_name);
-            $post->image = '/storage/post/' . $image_new_name;
-            $post->save();
+        } // Not authorized - Popular posts based on views
+        else {
+            $recommendedPosts = Post::query()
+                ->leftJoin('post_views', 'posts.id', '=', 'post_views.post_id')
+                ->select('posts.*', DB::raw('COUNT(post_views.id) as view_count'))
+                ->where('active', '=', 1)
+                ->whereDate('published_at', '<', Carbon::now())
+                ->orderByDesc('view_count')
+                ->groupBy([
+                    'posts.id',
+                    'posts.title',
+                    'posts.slug',
+                    'posts.thumbnail',
+                    'posts.body',
+                    'posts.active',
+                    'posts.published_at',
+                    'posts.user_id',
+                    'posts.created_at',
+                    'posts.updated_at',
+                    'posts.meta_title',
+                    'posts.meta_description',
+                ])
+                ->limit(3)
+                ->get();
         }
 
-        Session::flash('success', 'Post created successfully');
-        return redirect()->back();
+
+        // Show recent categories with their latest posts
+        $categories = Category::query()
+//            ->with(['posts' => function ($query) {
+//                $query->orderByDesc('published_at');
+//            }])
+            ->whereHas('posts', function ($query) {
+                $query
+                    ->where('active', '=', 1)
+                    ->whereDate('published_at', '<', Carbon::now());
+            })
+            ->select('categories.*')
+            ->selectRaw('MAX(posts.published_at) as max_date')
+            ->leftJoin('category_post', 'categories.id', '=', 'category_post.category_id')
+            ->leftJoin('posts', 'posts.id', '=', 'category_post.post_id')
+            ->orderByDesc('max_date')
+            ->groupBy([
+                'categories.id',
+                'categories.title',
+                'categories.slug',
+                'categories.created_at',
+                'categories.updated_at',
+            ])
+            ->limit(5)
+            ->get();
+
+
+        return view('home', compact(
+            'latestPost',
+            'popularPosts',
+            'recommendedPosts',
+            'categories'
+        ));
     }
+
 
     /**
      * Display the specified resource.
-     *
-     * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function show(Post $post, Request $request)
     {
-        return view('admin.post.show', compact('post'));
-    }
+        if (!$post->active || $post->published_at > Carbon::now()) {
+            throw new NotFoundHttpException();
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Post $post)
-    {
-        $tags = Tag::all();
-        $categories = Category::all();
-        return view('admin.post.edit', compact(['post', 'categories', 'tags']));
-    }
+        $next = Post::query()
+            ->where('active', true)
+            ->whereDate('published_at', '<=', Carbon::now())
+            ->whereDate('published_at', '<', $post->published_at)
+            ->orderBy('published_at', 'desc')
+            ->limit(1)
+            ->first();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Post $post)
-    {
-        $this->validate($request, [
-            'title' => "required|unique:posts,title, $post->id",
-            'description' => 'required',
-            'category' => 'required',
+        $prev = Post::query()
+            ->where('active', true)
+            ->whereDate('published_at', '<=', Carbon::now())
+            ->whereDate('published_at', '>', $post->published_at)
+            ->orderBy('published_at', 'asc')
+            ->limit(1)
+            ->first();
+
+        $user = $request->user();
+        PostView::create([
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'post_id' => $post->id,
+            'user_id' => $user?->id
         ]);
-        
-        $post->title = $request->title;
-        $post->slug = Str::slug($request->title);
-        $post->description = $request->description;
-        $post->iframe = $request->iframe;
-        $post->category_id = $request->category;
 
-        $post->tags()->sync($request->tags);
-
-        if($request->hasFile('image')){
-            $image = $request->image;
-            $image_new_name = time() . '.' . $image->getClientOriginalExtension();
-            $image->move('storage/post/', $image_new_name);
-            $post->image = '/storage/post/' . $image_new_name;
-        }
-
-        $post->save();
-
-        Session::flash('success', 'Post updated successfully');
-        return redirect()->back();
+        return view('post.view', compact('post', 'prev', 'next'));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Post  $post
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Post $post)
+    public function byCategory(Category $category)
     {
-        if($post){
-            if(file_exists(public_path($post->image))){
-                unlink(public_path($post->image));
-            }
+        $posts = Post::query()
+            ->join('category_post', 'posts.id', '=', 'category_post.post_id')
+            ->where('category_post.category_id', '=', $category->id)
+            ->where('active', '=', true)
+            ->whereDate('published_at', '<=', Carbon::now())
+            ->orderBy('published_at', 'desc')
+            ->paginate(10);
 
-            $post->delete();
-            Session::flash('Post deleted successfully');
-        }
+        return view('post.index', compact('posts', 'category'));
+    }
 
-        return redirect()->back();
+    public function search(Request $request)
+    {
+        $q = $request->get('q');
+
+        $posts = Post::query()
+            ->where('active', '=', true)
+            ->whereDate('published_at', '<=', Carbon::now())
+            ->orderBy('published_at', 'desc')
+            ->where(function ($query) use ($q) {
+                $query->where('title', 'like', "%$q%")
+                    ->orWhere('body', 'like', "%$q%");
+            })
+            ->paginate(10);
+
+        return view('post.search', compact('posts'));
     }
 }

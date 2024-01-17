@@ -1,54 +1,36 @@
 <?php
 
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\SiteController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Auth::routes();
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-// Front End Routes
-Route::get('/', 'FrontEndController@home')->name('website');
-Route::get('/about', 'FrontEndController@about')->name('website.about');
-Route::get('/category/{slug}', 'FrontEndController@category')->name('website.category');
-Route::get('/tag/{slug}', 'FrontEndController@tag')->name('website.tag');
-Route::get('/contact', 'FrontEndController@contact')->name('website.contact');
-Route::get('/post/{slug}', 'FrontEndController@post')->name('website.post');
-
-Route::post('/contact', 'FrontEndController@send_message')->name('website.contact');
-Route::resource('/url-amazon', 'AmazonUrlsController');
-
-// Admin Panel Routes
-Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
-    Route::get('/dashboard','DashboardController@index')->name('dashboard');
-
-    Route::resource('category', 'CategoryController');
-    Route::resource('tag', 'TagController');
-    Route::resource('post', 'PostController');
-    Route::resource('urlgenerator', 'AmazonUrlsController');
-
-    Route::get('/profile', 'UserController@profile')->name('user.profile');
-    Route::post('/profile', 'UserController@profile_update')->name('user.profile.update');
-    
-    // setting
-    Route::get('setting', 'SettingController@edit')->name('setting.index');
-    Route::post('setting', 'SettingController@update')->name('setting.update');
-
-    // Contact message
-    Route::get('/contact', 'ContactController@index')->name('contact.index');
-    Route::get('/contact/show/{id}', 'ContactController@show')->name('contact.show');
-    Route::delete('/contact/delete/{id}', 'ContactController@destroy')->name('contact.destroy');
-
-    Route::resource('/user', 'UserController')->except(['index']);
-    
-    //Roles administration    
-    Route::middleware(['role:admin'])->group(function(){
-        Route::get('user', 'UserController@index')->name('user.index');
-        Route::resource('/roles', 'RolesController');
-        Route::resource('/permissions', 'PermissionController');
-        Route::put('/users/{user}/roles', 'UserController@updateRoles')->name('users.updateRoles');
-        Route::post('roles/{role}/permissions', 'PermissionController@givePermission')->name('givePermission');
-        Route::post('roles/{role}/permissions/{permission}', 'PermissionController@revokePermission')->name('revokePermission');
-    });
-
-
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+require __DIR__.'/auth.php';
+
+Route::get('/', [PostController::class, 'home'])->name('home');
+Route::get('/search', [PostController::class, 'search'])->name('search');
+Route::get('/about-us', [SiteController::class, 'about'])->name('about-us');
+Route::get('/category/{category:slug}', [PostController::class, 'byCategory'])->name('by-category');
+Route::get('/{post:slug}', [PostController::class, 'show'])->name('view');
+
