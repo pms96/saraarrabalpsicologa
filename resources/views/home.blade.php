@@ -1,168 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <!-- Bootstrap CSS --> 
-        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-        <!-- Animate CSS --> 
-        <link rel="stylesheet" href="assets/css/animate.min.css">
-        <!-- Meanmenu CSS -->
-        <link rel="stylesheet" href="assets/css/meanmenu.css">
-        <!-- Boxicons CSS -->
-        <link rel="stylesheet" href="assets/css/boxicons.min.css">
-        <!-- Flaticon CSS -->
-        <link rel="stylesheet" href="assets/css/flaticon.css">
-        <!-- Odometer CSS -->
-        <link rel="stylesheet" href="assets/css/odometer.min.css">
-        <!-- Slick Min CSS -->
-        <link rel="stylesheet" href="assets/css/slick.min.css">
-        <!-- Nice Select CSS -->
-        <link rel="stylesheet" href="assets/css/nice-select.min.css">
-        <!-- Carousel CSS -->
-        <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
-        <!-- Carousel Default CSS -->
-        <link rel="stylesheet" href="assets/css/owl.theme.default.min.css">
-        <!-- Magnific Popup CSS -->
-        <link rel="stylesheet" href="assets/css/magnific-popup.min.css">
-        <!-- Fancybox CSS -->
-        <link rel="stylesheet" href="assets/css/fancybox.min.css">
-        <!-- Style CSS -->
-        <link rel="stylesheet" href="assets/css/style.css">
-        <!-- Dark CSS -->
-        <link rel="stylesheet" href="assets/css/dark.css">
-        <!-- Responsive CSS -->
-		<link rel="stylesheet" href="assets/css/responsive.css">
-		
-		<title>{{ config('app.name') }}</title>
-
-        <link rel="icon" type="image/png" href="assets/images/favicon.png">
-    </head>
-
+    
+    @include('layouts.web.header')
     <body>
 
-        <!-- Start Preloader Area -->
-        <div class="preloader-area">
-            <div class="spinner">
-                <div class="inner">
-                    <div class="disc"></div>
-                    <div class="disc"></div>
-                    <div class="disc"></div>
-                </div>
-            </div>
-        </div>
-        <!-- End Preloader Area -->
+        @include('layouts.web.preloader')
 
-        <!-- Start Navbar Area -->
-        <div class="navbar-area navbar-two">
-            <div class="main-responsive-nav">
-                <div class="container">
-                    <div class="main-responsive-menu">
-                        <div class="logo">
-                            <a href="index.html">
-                                <img src="assets/images/logo.png" class="black-logo" alt="image">
-                                <img src="assets/images/logo-2.png" class="white-logo" alt="image">
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="main-navbar">
-                <div class="container">
-                    <nav class="navbar navbar-expand-md navbar-light">
-                        <a class="navbar-brand" href="/">
-                            <img src="assets/images/logo.png" class="black-logo" alt="image">
-                            <img src="assets/images/logo-2.png" class="white-logo" alt="image">
-                        </a>
-
-                        <div class="collapse navbar-collapse mean-menu" id="navbarSupportedContent">
-                            <ul class="navbar-nav ms-auto">
-
-                                <li class="nav-item">
-                                    <a href="/" class="nav-link">Home</a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="/contact" class="nav-link">Contact</a>
-                                </li>
-                                
-                                <li class="nav-item">
-                                    <a href="blog" class="nav-link">Blog</a>
-                                </li>
-
-                            </ul>
-
-                        </div>
-                    </nav>
-                </div>
-            </div>
-
-            <div class="others-option-for-responsive">
-                <div class="container">
-                    <div class="dot-menu">
-                        <div class="inner">
-                            <div class="circle circle-one"></div>
-                            <div class="circle circle-two"></div>
-                            <div class="circle circle-three"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="container">
-                        <div class="option-inner">
-                            <div class="others-options d-flex align-items-center">
-                                <div class="option-item">
-                                    <div class="cart-btn">
-                                        <a href="cart.html">
-                                            <i class='flaticon-shopping-cart'></i>
-                                            <span>2</span>
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <div class="option-item">
-                                    <div class="search-box">
-                                        <i class='flaticon-search'></i>
-                                    </div>
-                                </div>
-                                
-                                <div class="option-item">
-                                    <div class="navbar-btn">
-                                        <a href="online-booking.html" class="default-btn">Book Online <i class="flaticon-pointer"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Navbar Area -->
-        
-        <!-- Start Search Layout -->
-        <div class="search-overlay">
-            <div class="d-table">
-                <div class="d-table-cell">
-                    <div class="search-overlay-layer"></div>
-                    <div class="search-overlay-layer"></div>
-                    <div class="search-overlay-layer"></div>
-                    
-                    <div class="search-overlay-close">
-                        <span class="search-overlay-close-line"></span>
-                        <span class="search-overlay-close-line"></span>
-                    </div>
-
-                    <div class="search-overlay-form">
-                        <form>
-                            <input type="text" class="input-search" placeholder="Search here...">
-                            <button type="submit"><i class='flaticon-search'></i></button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End Search Layout -->
+        @include('layouts.web.navbar')
         
         <!-- Start Main Banner Area -->
         <div class="main-banner-area">
@@ -183,7 +27,7 @@
 
                                 <div class="col-lg-6">
                                     <div class="main-banner-content">
-                                        <h1>Meet Our Expert <span>Psychologist</span></h1>
+                                        <h1>Sara Arrabal <span>Psicóloga</span></h1>
                                         <p>Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam.</p>
                     
                                         <div class="banner-btn">

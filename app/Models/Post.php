@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
+use IntlDateFormatter;
 
 class Post extends Model
 {
@@ -37,6 +38,21 @@ class Post extends Model
     public function getFormattedDate()
     {
         return $this->published_at->format('F jS Y');
+    }
+
+    public function getFormattedDatePost()
+    {
+
+        // Establecer la configuración regional a español
+        $locale = 'es_ES';
+        $formatter = new IntlDateFormatter($locale, IntlDateFormatter::SHORT, IntlDateFormatter::NONE);
+
+        // Configurar el formato para obtener el nombre del mes y el día del mes
+        $formatter->setPattern('MMM,d');
+        $date = $formatter->format($this->published_at);
+        
+        //$date = $this->published_at->format('M,j');
+        return explode(',',$date);
     }
 
     public function getThumbnail()
