@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Brickx\MaintenanceSwitch\MaintenanceSwitchPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -95,6 +96,7 @@ class AdminPanelProvider extends PanelProvider
                         'sm' => 1,
                 ]), 
                 ThemesPlugin::make(),
+                MaintenanceSwitchPlugin::make(),
             ]);
     }
 }
