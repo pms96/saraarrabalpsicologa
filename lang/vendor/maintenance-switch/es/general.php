@@ -16,6 +16,6 @@ return [
 	'deactivate' => 'desctivar',
 	'activated' => 'activado',
 	'deactivated' => 'desactivado',
-	'up' => 'Up',
-	'down' => 'Down',
+	'up' => 'Activa',
+	'down' => 'Mantenimento',
 ];

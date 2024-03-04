@@ -7,9 +7,12 @@ use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
+use Noxo\FilamentActivityLog\Extensions\LogCreateRecord;
 
 class CreateUser extends CreateRecord
 {
+    use LogCreateRecord; 
+
     protected static string $resource = UserResource::class;
 
     protected function getRedirectUrl(): string
@@ -28,7 +31,7 @@ class CreateUser extends CreateRecord
     {
         /** @var \App\Models\User $user */
         $user = parent::handleRecordCreation($data);
-        $user->assignRole('admin');
+        // $user->assignRole('admin');
 
         return $user;
     }

@@ -6,9 +6,12 @@ use App\Filament\Resources\ReservationResource;
 use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use Noxo\FilamentActivityLog\Extensions\LogCreateRecord;
 
 class CreateReservation extends CreateRecord
 {
+    use LogCreateRecord;
+    
     protected static string $resource = ReservationResource::class;
 
     protected function mutateFormDataBeforeCreate(array $data): array
