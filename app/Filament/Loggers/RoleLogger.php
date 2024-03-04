@@ -2,12 +2,13 @@
 
 namespace App\Filament\Loggers;
 
-use BezhanSalleh\FilamentShield\Resources\RoleResource;
+use App\Filament\Resources\Shield\RoleResource;
 use Illuminate\Contracts\Support\Htmlable;
 use Noxo\FilamentActivityLog\Loggers\Logger;
 use Noxo\FilamentActivityLog\ResourceLogger\Field;
 use Noxo\FilamentActivityLog\ResourceLogger\RelationManager;
 use Noxo\FilamentActivityLog\ResourceLogger\ResourceLogger;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Role;
 
 class RoleLogger extends Logger
@@ -33,9 +34,6 @@ class RoleLogger extends Logger
                     ->hasMany('permissions')
                     ->label(__('Permissions'))
                     ->badge(),
-            ])
-            ->relationManagers([
-                //
             ]);
     }
 }

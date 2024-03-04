@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Loggers\ReservationLogger;
 use App\Models\Reservation;
 use App\Models\Task;
 use App\Models\Track;
@@ -57,7 +58,7 @@ class CalendarWidget extends FullCalendarWidget
                         'track_id'      => $arguments['event']['track_id'] ?? $record->track_id,                        
                         'start_time'    => $arguments['event']['start'] ?? $record->start_time,
                         'end_time'      => $arguments['event']['end'] ?? $record->end_time
-                    ]);
+                    ]);                    
                 }
             ),
             DeleteAction::make(),

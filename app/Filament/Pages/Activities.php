@@ -10,7 +10,7 @@ class Activities extends ListActivities
 
     protected bool $isCollapsed = false;
 
-    protected static ?string $navigationGroup = 'Logs';
+    protected static ?string $navigationGroup = 'Herramientas';
 
     public function getTitle(): string
     {
