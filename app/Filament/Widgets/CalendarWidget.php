@@ -7,6 +7,7 @@ use App\Models\Reservation;
 use App\Models\Task;
 use App\Models\Track;
 use App\Models\User;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
@@ -22,6 +23,8 @@ use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
  
 class CalendarWidget extends FullCalendarWidget
 {
+    use HasWidgetShield;
+    
     public Model | string | null $model = Reservation::class;
  
     public function fetchEvents(array $fetchInfo): array
