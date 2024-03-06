@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Backups;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Brickx\MaintenanceSwitch\MaintenanceSwitchPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -24,6 +25,8 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
+use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
+use Stephenjude\FilamentDebugger\DebuggerPlugin;
 use Tapp\FilamentAuthenticationLog\FilamentAuthenticationLogPlugin;
 
 class AdminPanelProvider extends PanelProvider
@@ -114,6 +117,10 @@ class AdminPanelProvider extends PanelProvider
                         slug: 'my-profile'
                 ),
                 FilamentAuthenticationLogPlugin::make(),
+                FilamentSpatieLaravelBackupPlugin::make()
+                    ->usingPage(Backups::class)
+                    ->usingQueue('webSaraArrabal'),
+                DebuggerPlugin::make(),
             ]);
     }
 }
