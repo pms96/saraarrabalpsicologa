@@ -3,6 +3,9 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Backups;
+use App\Filament\Pages\HealthCheckResults;
+use App\Filament\Pages\Settings\Settings;
+use App\Models\User;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Brickx\MaintenanceSwitch\MaintenanceSwitchPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -24,8 +27,11 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
+use Outerweb\FilamentSettings\Filament\Plugins\FilamentSettingsPlugin;
+use pxlrbt\FilamentEnvironmentIndicator\EnvironmentIndicatorPlugin;
 use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
+use ShuvroRoy\FilamentSpatieLaravelHealth\FilamentSpatieLaravelHealthPlugin;
 use Stephenjude\FilamentDebugger\DebuggerPlugin;
 use Tapp\FilamentAuthenticationLog\FilamentAuthenticationLogPlugin;
 
@@ -123,6 +129,14 @@ class AdminPanelProvider extends PanelProvider
                     ->usingPage(Backups::class)
                     ->usingQueue('webSaraArrabal'),
                 DebuggerPlugin::make(),
+                EnvironmentIndicatorPlugin::make()
+                    ->visible(fn () => User::find(auth()->user()->id)?->can('viewIndicator')),
+                FilamentSettingsPlugin::make()
+                    ->pages([
+                        Settings::class,
+                    ]),
+                FilamentSpatieLaravelHealthPlugin::make()
+                    ->usingPage(HealthCheckResults::class),
             ]);
     }
 }
