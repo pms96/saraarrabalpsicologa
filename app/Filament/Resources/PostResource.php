@@ -7,10 +7,22 @@ use App\Filament\Resources\PostResource\RelationManagers;
 use App\Models\Post;
 use Closure;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
@@ -21,39 +33,48 @@ class PostResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?string $navigationGroup = 'Content';
+    protected static ?string $navigationGroup = 'Blog';
+
+    protected static ?string $navigationLabel = 'Post';
+
+    protected static ?string $modelLabel = 'Post';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Card::make()
+                Section::make()
                     ->schema([
-                        Forms\Components\TextInput::make('title')
+                        TextInput::make('title')
                             ->required()
                             ->maxLength(2048)
-                            ->reactive()
-                            ->afterStateUpdated(function (Closure $set, $state) {
-                                $set('slug', Str::slug($state));
-                            }),
-                        Forms\Components\TextInput::make('slug')
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(
+                                fn (Set $set, ?string $state) => $set('slug', Str::slug($state))
+                            ),
+                        TextInput::make('slug')
                             ->required()
                             ->maxLength(2048),
-                        Forms\Components\RichEditor::make('body')
+                        RichEditor::make('body')
                             ->required(),
-                        Forms\Components\TextInput::make('meta_title')
+                        TextInput::make('meta_title')
                             ->maxLength(255),
-                        Forms\Components\Textarea::make('meta_description')
+                        Textarea::make('meta_description')
                             ->maxLength(255),
-                        Forms\Components\Toggle::make('active')
+                        Toggle::make('active')
                             ->required(),
-                        Forms\Components\DateTimePicker::make('published_at'),
+                        DateTimePicker::make('published_at'),
                     ])->columnSpan(8),
 
-                Forms\Components\Card::make()
+                Section::make()
                     ->schema([
-                        Forms\Components\FileUpload::make('thumbnail'),
-                        Forms\Components\Select::make('categories')
+                        FileUpload::make('thumbnail'),
+                        Select::make('categories')
                             ->multiple()
                             ->relationship('categories', 'title'),
                     ])->columnSpan(4)
@@ -64,15 +85,15 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('thumbnail'),
-                Tables\Columns\TextColumn::make('title')->searchable(['title', 'body'])->sortable(),
-                Tables\Columns\IconColumn::make('active')
+                ImageColumn::make('thumbnail'),
+                TextColumn::make('title')->searchable(['title', 'body'])->sortable(),
+                IconColumn::make('active')
                     ->sortable()
                     ->boolean(),
-                Tables\Columns\TextColumn::make('published_at')
+                TextColumn::make('published_at')
                     ->sortable()
                     ->dateTime(),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime(),
             ])
             ->filters([

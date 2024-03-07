@@ -3,11 +3,14 @@
 namespace App\Filament\Resources\PostResource\Pages;
 
 use App\Filament\Resources\PostResource;
-use Filament\Pages\Actions;
+use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use Noxo\FilamentActivityLog\Extensions\LogCreateRecord;
 
 class CreatePost extends CreateRecord
 {
+    use LogCreateRecord;
+    
     protected static string $resource = PostResource::class;
 
     protected function mutateFormDataBeforeCreate(array $data): array
