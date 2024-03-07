@@ -9,8 +9,8 @@ return [
     'authorization' => false,
 
     'permissions' => [
-        'horizon' => 'horizon.view',
-        'telescope' => 'telescope.view',
+        'horizon' => 'viewHorizon',
+        'telescope' => 'viewTelescope',
     ],
 
     'group' => 'Herramientas',
