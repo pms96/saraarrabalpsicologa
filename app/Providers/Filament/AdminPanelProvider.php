@@ -32,7 +32,6 @@ use pxlrbt\FilamentEnvironmentIndicator\EnvironmentIndicatorPlugin;
 use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
 use ShuvroRoy\FilamentSpatieLaravelHealth\FilamentSpatieLaravelHealthPlugin;
-use Stephenjude\FilamentDebugger\DebuggerPlugin;
 use Tapp\FilamentAuthenticationLog\FilamentAuthenticationLogPlugin;
 
 class AdminPanelProvider extends PanelProvider
@@ -128,9 +127,11 @@ class AdminPanelProvider extends PanelProvider
                 FilamentSpatieLaravelBackupPlugin::make()
                     ->usingPage(Backups::class)
                     ->usingQueue('webSaraArrabal'),
-                DebuggerPlugin::make(),
                 EnvironmentIndicatorPlugin::make()
-                    ->visible(fn () => User::find(auth()->user()->id)?->can('viewIndicator')),
+                    ->color(fn () => match (app()->environment()) {
+                        'production' => Color::Blue,
+                        default => Color::Pink,
+                    }),
                 FilamentSettingsPlugin::make()
                     ->pages([
                         Settings::class,
