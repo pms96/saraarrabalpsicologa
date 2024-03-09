@@ -10,6 +10,8 @@ use App\Filament\Resources\TrackResource\RelationManagers;
 use App\Models\Track;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -37,7 +39,18 @@ class TrackResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->required()->maxLength(255),
+                TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                TextInput::make('color')
+                    ->required()
+                    ->maxLength(7),
+                TimePicker::make('start_hour')
+                    ->required(),
+                TimePicker::make('end_hour')
+                    ->required(),
+                Toggle::make('status')
+                    ->required(),
             ]);
     }
 
@@ -46,6 +59,9 @@ class TrackResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')->label('Lugar'),
+                TextColumn::make('color')->label('Color'),
+                TextColumn::make('start_hour')->label('Apertura'),
+                TextColumn::make('end_hour')->label('Cierre'),
             ])
             ->filters([
                 //
