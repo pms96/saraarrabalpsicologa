@@ -11,8 +11,6 @@ class Backups extends BaseBackups
     use HasPageShield;
     
     protected static ?string $navigationIcon = 'heroicon-o-cpu-chip';
-
-    // protected static ?string $navigationGroup = 'Herramientas';
  
     public function getHeading(): string | Htmlable
     {
