@@ -128,6 +128,8 @@ class AdminPanelProvider extends PanelProvider
                     ->usingPage(Backups::class)
                     ->usingQueue('webSaraArrabal'),
                 EnvironmentIndicatorPlugin::make()
+                    ->showBadge(true)
+                    ->showBorder(true)
                     ->color(fn () => match (app()->environment()) {
                         'production' => Color::Blue,
                         default => Color::Pink,

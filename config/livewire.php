@@ -156,6 +156,6 @@ return [
     */
 
     'pagination_theme' => 'tailwind',
-    
-    'asset_url' => 'https://www.lagrailla.es/',
+
+    // 'asset_url' => env('APP_ENV') == 'production' &&  env('APP_DEBUG') === TRUE ? 'https://www.lagrailla.es/tailwind/tailwind.js' : '',
 ];
