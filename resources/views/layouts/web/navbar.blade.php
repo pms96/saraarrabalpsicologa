@@ -25,19 +25,19 @@
                     <ul class="navbar-nav ms-auto">
 
                         <li class="nav-item">
-                            <a href="{{ route('home') }}" class="nav-link">Home</a>
+                            <a href="" class="nav-link">Home</a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ route('about') }}" class="nav-link">Sobre Mi</a>
+                            <a href="" class="nav-link">Sobre Mi</a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ route('contact') }}" class="nav-link">Contacto</a>
+                            <a href="" class="nav-link">Contacto</a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ route('blog') }}" class="nav-link">Blog</a>
+                            <a href="" class="nav-link">Blog</a>
                         </li>
 
 
