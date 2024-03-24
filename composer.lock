@@ -2842,7 +2842,7 @@
             "version": "1.1",
             "dist": {
                 "type": "path",
-                "url": "./larabuild/optionbuilder",
+                "url": "./packages/larabuild/optionbuilder",
                 "reference": "6f791a8cdac7533a97b6df869de8206be4017db4"
             },
             "type": "library",
@@ -2875,7 +2875,7 @@
             "version": "1.1",
             "dist": {
                 "type": "path",
-                "url": "./larabuild/pagebuilder",
+                "url": "./packages/larabuild/pagebuilder",
                 "reference": "fb852f4677717698770a9e68a0eab30cc6ad3b73"
             },
             "type": "library",
