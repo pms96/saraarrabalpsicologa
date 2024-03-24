@@ -17,24 +17,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/plantilla/home', [HomeController::class, 'home'])->name('home');
+Route::get('/plantilla/contact', [HomeController::class, 'contact'])->name('contact');
+Route::get('/plantilla/about', [HomeController::class, 'about'])->name('about');
+Route::get('/plantilla/blog', [PostController::class, 'home'])->name('blog');
+Route::get('/plantilla/search', [PostController::class, 'search'])->name('search');
+Route::get('/plantilla/about-us', [SiteController::class, 'about'])->name('about-us');
+Route::get('/plantilla/category/{category:slug}', [PostController::class, 'byCategory'])->name('by-category');
+Route::get('/plantilla/{post:slug}', [PostController::class, 'show'])->name('view');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    require __DIR__.'/optionbuilder.php';   
 });
-
-require __DIR__.'/auth.php';
-
-Route::get('/', [HomeController::class, 'home'])->name('home');
-Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
-Route::get('/about', [HomeController::class, 'about'])->name('about');
-Route::get('/blog', [PostController::class, 'home'])->name('blog');
-Route::get('/search', [PostController::class, 'search'])->name('search');
-Route::get('/about-us', [SiteController::class, 'about'])->name('about-us');
-Route::get('/category/{category:slug}', [PostController::class, 'byCategory'])->name('by-category');
-Route::get('/{post:slug}', [PostController::class, 'show'])->name('view');
-
+require __DIR__.'/pagebuilder.php';

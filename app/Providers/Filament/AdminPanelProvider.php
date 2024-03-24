@@ -12,7 +12,9 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages;
+use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -59,10 +61,26 @@ class AdminPanelProvider extends PanelProvider
                 Widgets\FilamentInfoWidget::class,
             ])
             ->navigationGroups([
+                'Consulta',
                 'Booking',
                 'Blog',
+                'Custom Web',
                 'Administración',
                 'Herramientas',
+            ])
+            ->navigationItems([
+                NavigationItem::make()
+                    ->icon('heroicon-o-presentation-chart-line')
+                    ->label(fn (): string => __('Páginas'))
+                    ->group('Custom Web')
+                    ->url(fn (): string => Dashboard::getUrl().'/pages')
+                    ->sort(1),
+                NavigationItem::make()
+                    ->icon('heroicon-o-presentation-chart-line')
+                    ->label(fn (): string => __('Opciones'))
+                    ->group('Custom Web')
+                    ->url(fn (): string => Dashboard::getUrl().'/option-builder')
+                    ->sort(2),
             ])
             ->middleware([
                 EncryptCookies::class,

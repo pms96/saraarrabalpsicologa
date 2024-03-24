@@ -12,6 +12,8 @@
         "guzzlehttp/guzzle": "^7.2",
         "hasnayeen/themes": "^3.0",
         "jeffgreco13/filament-breezy": "^2.3",
+        "larabuild/optionbuilder": "^1.1",
+        "larabuild/pagebuilder": "^1.1",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
         "laravel/slack-notification-channel": "^3.2",
@@ -84,5 +86,21 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": {
+        "pageubilder": {
+            "type": "path",
+            "url": "./packages/larabuild/pagebuilder",
+            "options": {
+                "symlink": false
+            }
+        },
+        "optionbuilder": {
+            "type": "path",
+            "url": "./packages/larabuild/optionbuilder",
+            "options": {
+                "symlink": false
+            }
+        }
+    }
 }
