@@ -27,8 +27,8 @@
                     <div class="row align-items-center">
                         <div class="col-lg-6">
                             <div class="services-tab-image">
-                                @if ( !empty(pagesetting('home3_image')) )
-                                    <img src="{{ pagesetting('home3_image')[0]['thumbnail'] }}" alt="{{ __('Image') }}" />
+                                @if ( !empty($tab['home3_image']) )
+                                    <img src="{{ $tab['home3_image'][0]['thumbnail'] }}" alt="{{ __('Image') }}" />
                                 @else
                                     <img src="{{ asset('assets/images/services/services-1.jpg') }}" alt="image">
                                 @endif

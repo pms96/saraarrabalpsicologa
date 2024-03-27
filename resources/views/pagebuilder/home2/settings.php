@@ -2,7 +2,7 @@
 
 return [
     'id' => 'home2',
-    'name' => __('Home2'),
+    'name' => __('Presentación'),
     'icon' => '<i class="icon-book-open"></i>',
     'tab' => "Home",
     'fields' => [
